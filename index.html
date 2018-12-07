@@ -1,10 +1,401 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
-<html lang="en"> 
-<head> 
-<meta http-equiv="content-type" content="text/html; charset=utf-8"> 
-<title>Title Goes Here</title> 
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Scouting Form 2018</title>
+    <link rel="stylesheet" href="resources/pure-min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="resources/font-awesome-stars.css">
+    <link rel="stylesheet" href="main.css">
+
+    <style>
+        #expandingFall.expand-after {
+            height: 81px;
+        }
+    </style>
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
 </head>
-<body> 
-<p>This is my web page</p> 
+
+<body>
+    <div class="pure-menu pure-menu-horizontal" style="position: fixed; top:0; z-index: 5; height:37px;">
+        <ul class="pure-menu-list">
+
+            <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                <a id="menuLink1" class="pure-menu-link" onclick="openBetting('betting', 'form')" style="border-bottom-width:2px;">2018 Scouting</a>
+                <ul class="pure-menu-children">
+                    <li class="pure-menu-item">
+                        <a href="#Info" class="pure-menu-link" onclick="openBetting('betting', 'form')">Pre-Match</a>
+                    </li>
+                    <li class="pure-menu-item">
+                        <a href="#Auto" class="pure-menu-link" onclick="openBetting('betting', 'form')">Auto</a>
+                    </li>
+                    <li class="pure-menu-item">
+                        <a href="#Teleop" class="pure-menu-link" onclick="openBetting('betting', 'form')">Teleop</a>
+                    </li>
+                    <li class="pure-menu-item">
+                        <a href="#Rating" class="pure-menu-link" onclick="openBetting('betting', 'form')">Rating</a>
+                    </li>
+                    <li class="pure-menu-item">
+                        <a href="#endGame" class="pure-menu-link" onclick="openBetting('betting', 'form')">Endgame</a>
+                    </li>
+                    <li class="pure-menu-item">
+                        <a href="#other" class="pure-menu-link" onclick="openBetting('betting', 'form')">Other</a>
+                    </li>
+                </ul>
+                <!-- <li class="pure-menu-item">
+                    <a href="#" class="pure-menu-link" onclick="openBetting('form', 'betting'); scoreDisplay(score)" style="width: 51px !important;">Betting</a>
+                </li> -->
+            </li>
+        </ul>
+
+    </div>
+    <br/>
+    <div class="page-display" id="form">
+        <form id="mainForm" class="pure-form pure-form-stacked" onsubmit="event.preventDefault(); submitForm();" onkeypress="return event.keyCode != 13;">
+            <fieldset>
+                <legend>
+                    <a id="Info">Pre-Match</a>
+                </legend>
+                <div class="pure-g">
+                    <div class="pure-u-1-4 pure-u-md-1-3 expanding prematch-expanding">
+                        <label for="ScoutName">Scout Name</label>
+                        <input id="ScoutName" name="ScoutName" class="pure-u-23-24" type="text" placeholder="Scout Name" required>
+                    </div>
+                    <div class="pure-u-1-4 pure-u-md-1-3 expanding prematch-expanding">
+                        <label for="ScoutTeamNumber">Your Team #</label>
+                        <input id="ScoutTeamNumber" name="ScoutTeamNumber" class="pure-u-23-24" type="number" placeholder="Your Team #" required max="10000" min="0">
+                    </div>
+                    <div class="vertical-line"></div>
+                    <div class="pure-u-1-4 pure-u-md-1-3 expanding prematch-expanding">
+                        <label for="TeamNumber">Team # Scouted</label>
+                        <input id="TeamNumber" name="TeamNumber" class="pure-u-23-24" type="number" placeholder="Scout Team #" required max="10000" min="0">
+                    </div>
+                    <div class="pure-u-1-4 pure-u-md-1-3 expanding prematch-expanding">
+                        <label for="MatchNumber">Match #</label>
+                        <input id="MatchNumber" name="MatchNumber" class="pure-u-23-24" type="number" placeholder="Match #" required max="200" min="0">
+                    </div>
+
+                </div>
+                <label for="NoShow" class="pure-checkbox">
+                    <input id="NoShow" name="NoShow" type="checkbox" value="NoShow"> Didn't Show Up
+                </label>
+                <legend>
+                    <a id="Auto">Auto</a>
+                </legend>
+                <label>
+
+                </label>
+                <div class="centerDiv">
+                    <p class="auto">Auto Start Position</p>
+                    <input id="reqAutoStartPos" name="autoPos" required style="position:relative; z-index:1; margin:0; margin-left:auto;margin-right:auto;"></input>
+                    <canvas width=300 height=363 id="autoStartPos" class="fieldCanvas" style="position:relative; z-index:2; top: -37px"> </canvas>
+                </div>
+                <div class="autoRightContainer">
+                    <div class="pure-g">
+                        <div class="pure-u-1 pure-u-md-1-3 expanding">
+                            <label for="AutoSwitchNum">Cubes Placed: Switch</label>
+                            <input id="AutoSwitchNum" name="AutoSwitchNum" min="0" max="3" class="pure-u-23-24" type="number" placeholder="Switch" oninput="dropDown();autoTimeDisplay();" style="background: #FFFFF5;">
+                        </div>
+                        <div class="pure-u-1 pure-u-md-1-3 expanding">
+                            <label for="AutoSwitchFail">Cubes Dropped: Switch</label>
+                            <input id="AutoSwitchFail" class="pure-u-23-24" name="AutoSwitchFail" type="number" min="0" max="60" placeholder="Switch" style="background: #FFFFF5;">
+                        </div>
+                        <div class="pure-u-1 pure-u-md-1-3 expanding">
+                            <label for="AutoScaleNum">Cubes Placed: Scale</label>
+                            <input id="AutoScaleNum" name="AutoScaleNum" min="0" max="3" class=pure-u-23-24 type="number" placeholder="Scale" oninput="dropDown();autoTimeDisplay();" style="background: #F5FFF5;">
+                        </div>
+                        <div class="pure-u-1 pure-u-md-1-3 expanding">
+                            <label for="AutoScaleFail">Cubes Dropped: Scale</label>
+                            <input id="AutoScaleFail" class="pure-u-23-24" name="AutoScaleFail" type="number" min="0" max="60" placeholder="Scale" style="background: #F5FFF5;">
+                        </div>
+                    </div>
+                    <div id="expanding-auto" class="expand-before">
+                        <hr/>
+                        <label>Placement time on the
+                            <span id=autoTimeElement></span>
+                        </label>
+                        <label for="time-one" class="pure-radio">
+                            <input id="time-one" type="radio" name="PlacementTime" value="5"> Placed in 0-5 seconds
+                        </label>
+                        <label for="time-two" class="pure-radio">
+                            <input id="time-two" type="radio" name="PlacementTime" value="10"> Placed in 5-10 seconds
+                        </label>
+                        <label for="time-three" class="pure-radio">
+                            <input id="time-three" type="radio" name="PlacementTime" value="15"> Placed in 10-15 seconds
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>
+                    <a id="Teleop">Teleop</a>
+                </legend>
+                <div class="pure-g">
+                    <div class="pure-u-1-2 pure-u-md-1-3 expanding tooltip">
+                        <label for="PlacedSwitch">Cubes Placed: Switch</label>
+                        <input id="PlacedSwitch" class="pure-u-23-24" name="SwitchCubeNumber" type="number" min="0" max="60" placeholder="Switch" style="background: #FFFFF5;">
+                        <span class="tooltiptext">Cubes successfully placed on the switch during teleop</span>
+                    </div>
+                    <!-- DroppedCubes isn't on the spreadsheet, because it's more specific-->
+                    <div class="pure-u-1-2 pure-u-md-1-3 expanding tooltip">
+                        <label for="DroppedSwitch">Cubes Dropped: Switch</label>
+                        <input id="DroppedSwitch" class="pure-u-23-24" name="DroppedCubesSwitch" type="number" min="0" max="60" placeholder="Switch" style="background: #FFFFF5;">
+                        <span class="tooltiptext">Cubes dropped during the process of placement on the switch</span>
+                    </div>
+                    <hr>
+                    <div class="pure-u-1-2 pure-u-md-1-3 expanding tooltip">
+                        <label for="PlacedScale">Cubes Placed: Scale</label>
+                        <input id="PlacedScale" class="pure-u-23-24" name="ScaleCubeNumber" type="number" min="0" max="60" placeholder="Scale" style="background: #F5FFF5;">
+                        <span class="tooltiptext">Cubes successfully placed on the scale during teleop</span>
+                    </div>
+                    <div class="pure-u-1-2 pure-u-md-1-3 expanding tooltip">
+                        <label for="DroppedScale">Cubes Dropped: Scale</label>
+                        <input id="DroppedScale" class="pure-u-23-24" name="DroppedCubesScale" type="number" min="0" max="60" placeholder="Scale" style="background: #F5FFF5;">
+                        <span class="tooltiptext">Cubes dropped during the process of placement on the scale</span>
+                    </div>
+                    <hr>
+                    <div class="pure-u-1-2 pure-u-md-1-3 expanding tooltip">
+                        <label for="Exchanged">Cubes Exchanged</label>
+                        <input id="Exchanged" class="pure-u-23-24" name="ExchangeCubes" type="number" min="0" max="60" placeholder="Exchanged" style="background: #FFF5FF;">
+                        <span class="tooltiptext">Cubes successfully put through the exchange during teleop</span>
+                    </div>
+                    <div class="pure-u-1-2 pure-u-md-1-3 expanding tooltip">
+                        <label for="Dropped">Cubes Dropped Otherwise</label>
+                        <input id="Dropped" class="pure-u-23-24" name="DroppedCubes" type="number" min="0" max="60" placeholder="Dropped" style="background: #FFF5FF;">
+                        <span class="tooltiptext">Cubes dropped any time not during placement on either the switch or scale</span>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>
+                    <a id="Rating">Qualitative Ratings</a>
+                </legend>
+                <div>
+                    <div class="rating-outer">
+                        <legend>Direct Slot Intake</legend>
+                        <fieldset class="rating">
+                            <input type="radio" id="star5" name="DirectSlotIntake" value="5" />
+                            <label class="full" for="star5" title="Awesome - 5 stars" required></label>
+                            <input type="radio" id="star4" name="DirectSlotIntake" value="4" />
+                            <label class="full" for="star4" title="Pretty good - 4 stars"></label>
+                            <input type="radio" id="star3" name="DirectSlotIntake" value="3" />
+                            <label class="full" for="star3" title="Average - 3 stars"></label>
+                            <input type="radio" id="star2" name="DirectSlotIntake" value="2" />
+                            <label class="full" for="star2" title="Bad - 2 stars"></label>
+                            <input type="radio" id="star1" name="DirectSlotIntake" value="1" />
+                            <label class="full" for="star1" title="Incapable - 1 star"></label>
+                        </fieldset>
+                        <div class="button-secondary pure-button" onclick="deselect('DirectSlotIntake');">Clear</div>
+                    </div>
+                    <div class="rating-outer">
+                        <legend>Ground Intake</legend>
+                        <fieldset class="rating">
+                            <input type="radio" id="groundStar5" name="GroundIntake" value="5" />
+                            <label class="full" for="groundStar5" title="Awesome - 5 stars" required></label>
+                            <input type="radio" id="groundStar4" name="GroundIntake" value="4" />
+                            <label class="full" for="groundStar4" title="Pretty good - 4 stars"></label>
+                            <input type="radio" id="groundStar3" name="GroundIntake" value="3" />
+                            <label class="full" for="groundStar3" title="Average - 3 stars"></label>
+                            <input type="radio" id="groundStar2" name="GroundIntake" value="2" />
+                            <label class="full" for="groundStar2" title="Bad - 2 stars"></label>
+                            <input type="radio" id="groundStar1" name="GroundIntake" value="1" />
+                            <label class="full" for="groundStar1" title="Incapable - 1 star"></label>
+                        </fieldset>
+                        <div class="button-secondary pure-button" onclick="deselect('GroundIntake');">Clear</div>
+                    </div>
+                    <div class="rating-outer">
+
+                        <legend>Pile Intake</legend>
+                        <fieldset class="rating">
+                            <input type="radio" id="pileStar5" name="PileIntake" value="5" />
+                            <label class="full" for="pileStar5" title="Awesome - 5 stars" required></label>
+                            <input type="radio" id="pileStar4" name="PileIntake" value="4" />
+                            <label class="full" for="pileStar4" title="Pretty good - 4 stars"></label>
+                            <input type="radio" id="pileStar3" name="PileIntake" value="3" />
+                            <label class="full" for="pileStar3" title="Average - 3 stars"></label>
+                            <input type="radio" id="pileStar2" name="PileIntake" value="2" />
+                            <label class="full" for="pileStar2" title="Bad - 2 stars"></label>
+                            <input type="radio" id="pileStar1" name="PileIntake" value="1" />
+                            <label class="full" for="pileStar1" title="Incapable - 1 star"></label>
+                        </fieldset>
+                        <div class="button-secondary pure-button" onclick="deselect('PileIntake');">Clear</div>
+                    </div>
+                    <div class="rating-outer">
+
+                        <legend>Maneuverability</legend>
+                        <fieldset class="rating">
+                            <input type="radio" id="maneuverabilityStar5" name="Maneuverability" value="5" />
+                            <label class="full" for="maneuverabilityStar5" title="Awesome - 5 stars" required></label>
+                            <input type="radio" id="maneuverabilityStar4" name="Maneuverability" value="4" />
+                            <label class="full" for="maneuverabilityStar4" title="Pretty good - 4 stars"></label>
+                            <input type="radio" id="maneuverabilityStar3" name="Maneuverability" value="3" />
+                            <label class="full" for="maneuverabilityStar3" title="Average - 3 stars"></label>
+                            <input type="radio" id="maneuverabilityStar2" name="Maneuverability" value="2" />
+                            <label class="full" for="maneuverabilityStar2" title="Bad - 2 stars"></label>
+                            <input type="radio" id="maneuverabilityStar1" name="Maneuverability" value="1" />
+                            <label class="full" for="maneuverabilityStar1" title="Incapable - 1 star"></label>
+                        </fieldset>
+                        <div class="button-secondary pure-button" onclick="deselect('Maneuverability');">Clear</div>
+                    </div>
+                    <div class="rating-outer">
+                        <legend>Defense</legend>
+                        <fieldset class="rating">
+                            <input type="radio" id="defenseStar5" name="Defense" value="5" onclick="deselectStar('defenseStar5', 'defenseRate')" />
+                            <label class="full" for="defenseStar5" title="Awesome - 5 stars" required></label>
+                            <input type="radio" id="defenseStar4" name="Defense" value="4" onclick="deselectStar('defenseStar4', 'defenseRate')" />
+                            <label class="full" for="defenseStar4" title="Pretty good - 4 stars"></label>
+                            <input type="radio" id="defenseStar3" name="Defense" value="3" onclick="deselectStar('defenseStar3', 'defenseRate')" />
+                            <label class="full" for="defenseStar3" title="Average - 3 stars"></label>
+                            <input type="radio" id="defenseStar2" name="Defense" value="2" onclick="deselectStar('defenseStar2', 'defenseRate')" />
+                            <label class="full" for="defenseStar2" title="Bad - 2 stars"></label>
+                            <input type="radio" id="defenseStar1" name="Defense" value="1" onclick="deselectStar('defenseStar1', 'defenseRate')" />
+                            <label class="full" for="defenseStar1" title="Incapable - 1 star"></label>
+                        </fieldset>
+                        <div class="button-secondary pure-button" onclick="deselect('Defense');">Clear</div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>
+                    <a id="endGame">Endgame State</a>
+                </legend>
+                <div style="float:left;">
+                    <label for="endGame-one" class="pure-radio">
+                                <input id="endGame-one" type="radio" name="Climb" value="Parked" onchange="dropDown()"> Parked
+                            </label>
+                    <label for="endGame-two" class="pure-radio">
+                                <input id="endGame-two" type="radio" name="Climb" value="Fail" onchange="dropDown()" )> Failed to Climb
+                            </label>
+                    <div id="expanding" class="expand-before">
+                        <label for="endGameFail-two" class="pure-radio" style="text-indent: 50px">
+                                    <input id="endGameFail-two" type="radio" name="FailOption" value="Other's fault"> Other's Fault
+                                </label>
+                        <!-- I wasn't sure if this should be included in climb, so I left these 2 as they were-->
+                        <label for="endGameFail-one" class="pure-radio" style="text-indent: 50px">
+                                    <input id="endGameFail-one" type="radio" name="FailOption" value="Own fault"> Their Fault
+                                </label>
+                    </div>
+                    <label for="endGame-three" class="pure-radio">
+                                <input id="endGame-three" type="radio" name="Climb" value="Climbed" onchange="dropDown()"> Climbed (Levitate Doesn't Count)
+                            </label>
+                    <div id="expanding1" class="expand-before">
+                        <label for="endGameSuccess-one" class="pure-radio" style="text-indent: 50px">
+                                    <input id="endGameSuccess-one" type="radio" name="SuccessOption" value="Solo Climb"> On Their Own
+                                </label>
+                        <label for="endGameSuccess-three" class="pure-radio tooltip" style="text-indent: 50px">
+                                <input id="endGameSuccess-three" type="radio" name="SuccessOption" value="Bar Assist"> Climbs onto other robot
+                            </label>
+                        <label for="endGameSuccess-two" class="pure-radio" style="text-indent: 50px">
+                                    <input id="endGameSuccess-two" type="radio" name="SuccessOption" value="Ramp Assist"> Carried/drives onto other robot
+                                </label>
+                        <!-- Same thing here, wasn't sure what to name it, we should probably add stuff to the spreadsheet-->
+                    </div>
+                    <label for="endGame-four" class="pure-radio">
+                                <input id="endGame-four" type="radio" name="Climb" value="No Attempt" onchange="dropDown()" checked> Did Nothing
+                            </label>
+                </div>
+
+                <div class="pure-u-1-2 endgameTime expanding tooltip" style="margin: 8px 0 8px 0;">
+                    <label for="ClimbSecond">Seconds to Climb</label>
+                    <input id="ClimbSecond" name="ClimbTime" class="pure-u-23-24 expanding" type="number" placeholder="Seconds to Climb" min="0" max="30" disabled="true">
+                    <span class="tooltiptext">Time between a robot beginning its climb and the end of the match</span>
+                    <!--Need to add to spreadsheet-->
+                </div>
+                <br/>
+                <hr/>
+                <div class="pure-g">
+                    <div class="pure-u-1-3 expanding tooltip">
+                        <label for="HelpedClimbBar">Robots Assisted (Climb On)</label>
+                        <input id="HelpedClimbBar" class="pure-u-23-24 expanding" name="HelpedClimbBar" type="number" placeholder="Climb On Assists" min="0" max="2" style="background:#F5F5FF">
+                        <span class="tooltiptext">Number of robots that use their own climbing mechanisms to grab on to the robot you're scouting</span>
+                    </div>
+                    <div class="pure-u-1-3 expanding tooltip">
+                        <label for="HelpedClimbRamp">Robots Assisted (Drive On)</label>
+                        <input id="HelpedClimbRamp" class="pure-u-23-24 expanding" name="HelpedClimbRamp" type="number" placeholder="Drive On Assists" min="0" max="2" style="background:#F5F5FF">
+                        <span class="tooltiptext">Number of robots that were carried by the robot you're scouting, without needing to use their own mechanisms</span>
+                    </div>
+                    <div class="pure-u-1-3 expanding tooltip">
+                        <label for="RobotsDropped">Robots Dropped</label>
+                        <input id="RobotsDropped" class="pure-u-23-24 expanding" name="RobotsDropped" type="number" placeholder="Dropped" min="0" max="2" style="background:#F5F5FF">
+                        <span class="tooltiptext">Number of robots that the robot you're scouting drops when attempting to help them climb</span>
+                    </div>
+                </div>
+
+            </fieldset>
+            <fieldset>
+                <legend>
+                    <a id="other">Other Info</a>
+                </legend>
+                <label for="Breakdown" class="pure-checkbox" style="margin-top: 0px;">
+                    <input id="Breakdown" name="Breakdown" type="checkbox" value="Breakdown"> Robot Broke Down
+                </label>
+                <label for="Fall" class="pure-checkbox">
+                    <input id="Fall" name="Fall" type="checkbox" value="Fall" onchange="dropDown()"> Robot Falls
+                </label>
+                <div id="expandingFall" class="expand-before">
+                    <div class="pure-u-1-2 expanding tooltip">
+                        <label for="fallTime">Amount of time fallen (s)</label>
+                        <input id="fallTime" class="pure-u-23-24 expanding" name="fallTime" type="number" placeholder="Time fallen" min="0" max="150">
+                        <span class="tooltiptext">Time between the fall and the end of the match, in seconds.</span>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset style="margin-top:-15px">
+                <textarea class="pure-input-1" name="Comments" placeholder="Comments" style="background:#F5FFFF;"></textarea>
+            </fieldset>
+            <!-- <button type="submit" class="pure-button pure-button-primary" onclick="betting(bettingScore,'team', 'teamWin')">Submit Data</button> -->
+            <button type="submit" class="pure-button pure-button-primary">Submit Data</button>
+
+            <br/>
+            <br/>
+        </form>
+
+        <script src="main.js"></script>
+
+    </div>
+    <div class="page-disappear" id="betting" class="page-disappear">
+        <br>
+        <h1>Betting Points:
+            <span id='myScore'></span>
+        </h1>
+        <form id="bettingForm" class="pure-form pure-form-stacked" onsubmit="event.preventDefault();">
+            <div class="pure-g">
+
+
+                </br>
+
+                <div class="pure-u-1-3 pure-u-md-1-3">
+                    <label for="team">Betting: Who's Gonna Win</label>
+                    <select id="team" class="pure-u-23-24">
+                        <option>Choose a Team</option>
+                        <option>Blue</option>
+                        <option>Red</option>
+                    </select>
+                </div>
+            </div>
+            <div class="pure-u-1-3 pure-u-md-1-3">
+                <label for="score">Betting: What Will The Winning Team Score?</label>
+                <input id="score" class="pure-u-23-24" name="score" type="number" min="0" max="600" placeholder="Team Score">
+            </div>
+            <div class="pure-u-1-3 pure-u-md-1-3">
+                <label for="LosingScore">What Will The Losing Team Score?</label>
+                <input id="LosingScore" class="pure-u-23-24" name="LosingScore" type="number" min="0" max="600" placeholder="Losing Score">
+            </div>
+            <legend>Complete at the end of match</legend>
+            <div class="pure-g">
+                <div class="pure-u-1-3 pure-u-md-1-3">
+                    <label for="teamWin">Who Won</label>
+                    <select id="teamWin" class="pure-u-23-24">
+                        <option>Choose a Team</option>
+                        <option>Blue</option>
+                        <option>Red</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
 </body>
+
 </html>
